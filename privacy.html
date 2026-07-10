@@ -55,8 +55,9 @@
     <h2>What the app does</h2>
     <ul>
       <li><strong>Camera:</strong> used only to scan the QR code shown by the desktop plugin. Camera images are processed on your device and never stored or transmitted.</li>
-      <li><strong>Local network:</strong> the app connects to the BONKO Streamer plugin on your computer inside your own WiFi network to receive the audio stream. The audio never leaves your local network and is not uploaded anywhere.</li>
+      <li><strong>Local network:</strong> the app connects to the BONKO Streamer plugin on your computer inside your own WiFi network to receive the audio stream. In the normal local listening flow, the audio stays inside that network.</li>
       <li><strong>Background audio:</strong> the app keeps the audio stream playing when your screen is locked. No data is collected in the process.</li>
+      <li><strong>Optional Share Stream:</strong> only when you explicitly choose Share Stream, the desktop plugin creates a temporary external tunnel through third-party infrastructure operated by localhost.run. The resulting link lets a recipient listen outside your local network, so the streamed audio then leaves your local network and passes through that tunnel. BONKO does not record or store the audio.</li>
     </ul>
   </div>
 
@@ -67,6 +68,7 @@
       <li>We do not use analytics or tracking of any kind.</li>
       <li>We do not show ads.</li>
       <li>We do not sell data — there is none to sell.</li>
+      <li>We do not create the external Share Stream tunnel unless you request it.</li>
     </ul>
   </div>
 
