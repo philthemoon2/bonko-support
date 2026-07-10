@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BONKO STREAMER — Support</title>
+<meta name="description" content="Support, FAQ and contact for BONKO Streamer — stream your DAW master bus to your phone over WiFi.">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #F0F0F5 0%, #FFFFFF 45%, #F5F3F9 100%);
+    color: #1a1a2e;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+  header { text-align: center; margin-bottom: 40px; }
+  h1 { font-weight: 900; font-size: 30px; letter-spacing: 1px; }
+  h1 span { display: block; font-weight: 500; font-size: 13px; letter-spacing: 6px; color: #6b6b7b; margin-top: 4px; }
+  .badge {
+    display: inline-block; margin-top: 16px; padding: 6px 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    font-size: 11px; letter-spacing: 2px; color: #6b6b7b;
+  }
+  .card {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  h2 { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+  p, li { font-size: 15px; color: #3a3a4e; }
+  ol, ul { padding-left: 22px; margin-top: 6px; }
+  li { margin-bottom: 6px; }
+  a { color: #8B5CF6; font-weight: 600; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  details { margin-bottom: 12px; }
+  summary { font-weight: 700; font-size: 15px; cursor: pointer; }
+  details p { margin: 8px 0 0 0; }
+  footer { text-align: center; margin-top: 40px; font-size: 11px; letter-spacing: 2px; color: #9a9aa8; }
+  code { background: rgba(139,92,246,0.1); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>BONKO<span>STREAMER</span></h1>
+    <div class="badge">SUPPORT &amp; FAQ</div>
+  </header>
+
+  <div class="card">
+    <h2>What is BONKO Streamer?</h2>
+    <p>BONKO Streamer streams the master bus of your DAW (Ableton Live, Cubase, Logic with VST3 hosts, FL Studio &amp; more) to your phone over your local WiFi — in real time, lossless, with no cables and no audio interface routing. Load the free desktop plugin on your master bus, scan the QR code with the BONKO app, and listen to your mix on the speakers people actually use: your phone.</p>
+  </div>
+
+  <div class="card">
+    <h2>Quick Start</h2>
+    <ol>
+      <li>Install the <strong>BONKO Streamer VST3 plugin</strong> on your Mac and load it on the master bus of your DAW.</li>
+      <li>Make sure your phone and your computer are on the <strong>same WiFi network</strong>.</li>
+      <li>Open the <strong>BONKO app</strong> on your iPhone and scan the QR code shown in the plugin.</li>
+      <li>Press play in your DAW — your mix is now live on your phone. The stream keeps playing even when your screen is locked.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>FAQ</h2>
+    <details>
+      <summary>The app can't find my computer / no sound</summary>
+      <p>Check that phone and computer are on the same WiFi network (not guest WiFi or a hotspot). Make sure macOS isn't blocking your DAW in <em>System Settings → Network → Firewall</em>. Then close and reopen the plugin window to restart the stream server.</p>
+    </details>
+    <details>
+      <summary>Which DAWs are supported?</summary>
+      <p>Any DAW that hosts VST3 plugins on macOS — Ableton Live, Cubase, Studio One, FL Studio, Reaper and more.</p>
+    </details>
+    <details>
+      <summary>Does the audio go through the internet or a cloud?</summary>
+      <p>No. The stream runs directly from your computer to your phone inside your own WiFi network. Nothing is uploaded, nothing leaves your studio unless you explicitly use the Share Link feature.</p>
+    </details>
+    <details>
+      <summary>The audio drops out or stutters</summary>
+      <p>WiFi congestion is the usual cause. Move closer to your router, or switch your router to a 5 GHz network. Heavy CPU load in your DAW can also cause dropouts.</p>
+    </details>
+    <details>
+      <summary>Where do I get the desktop plugin?</summary>
+      <p>The BONKO Streamer VST3 plugin for macOS is free at <a href="https://phil-thebeat.com">phil-thebeat.com</a>.</p>
+    </details>
+    <details>
+      <summary>Does the app collect any data?</summary>
+      <p>No. The app collects no personal data, has no accounts, no tracking and no analytics. See the <a href="privacy.html">Privacy Policy</a>.</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Contact</h2>
+    <p>Questions, bug reports or feature ideas — we answer fast:</p>
+    <p style="margin-top:8px"><strong>Email:</strong> <a href="mailto:info@phil-thebeat.com">info@phil-thebeat.com</a></p>
+  </div>
+
+  <footer>POWERED BY<br>PHIL THE BEAT · DAVID "DAJU" BONK</footer>
+</div>
+</body>
+</html>
