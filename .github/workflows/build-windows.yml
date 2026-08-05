@@ -80,8 +80,17 @@ jobs:
           # Level 5 is Tracktion's documented host-compatibility baseline.
           # The processor test above separately executes 10,000 MONO parameter
           # automation and render cycles before this full VST3/editor pass.
-          & $validator.FullName --strictness-level 5 --output-dir pluginval-results $plugin
-          $validatorExitCode = $LASTEXITCODE
+          $processInfo = [System.Diagnostics.ProcessStartInfo]::new()
+          $processInfo.FileName = $validator.FullName
+          $processInfo.UseShellExecute = $false
+          $processInfo.ArgumentList.Add("--strictness-level")
+          $processInfo.ArgumentList.Add("5")
+          $processInfo.ArgumentList.Add("--output-dir")
+          $processInfo.ArgumentList.Add("pluginval-results")
+          $processInfo.ArgumentList.Add($plugin)
+          $validatorProcess = [System.Diagnostics.Process]::Start($processInfo)
+          $validatorProcess.WaitForExit()
+          $validatorExitCode = $validatorProcess.ExitCode
 
           # pluginval 1.0.4 on current Windows runners can return process code 1
           # after its own report has completed with SUCCESS. Gate on the
