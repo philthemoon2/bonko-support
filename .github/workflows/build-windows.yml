@@ -89,6 +89,30 @@ jobs:
           & "$project/installer/build_windows_download.ps1" -Version $env:BONKO_VERSION
           if ($LASTEXITCODE -ne 0) { throw "Windows packaging failed" }
 
+      - name: Exercise Windows installer and uninstaller
+        shell: pwsh
+        run: |
+          $release = "source/audio-plugin-coder/plugins/BonkerStream/release"
+          $setup = "$release/BonkoStreamer-v$env:BONKO_VERSION-Windows-Setup.exe"
+          $install = Start-Process -FilePath $setup -ArgumentList "/S" -Wait -PassThru
+          if ($install.ExitCode -ne 0) { throw "Silent installer failed with exit code $($install.ExitCode)" }
+
+          $installedPlugin = Join-Path $env:CommonProgramFiles "VST3\Bonko Streamer.vst3\Contents\x86_64-win\Bonko Streamer.vst3"
+          $uninstaller = Join-Path $env:ProgramFiles "BONKO Streamer\Uninstall.exe"
+          if (-not (Test-Path -LiteralPath $installedPlugin -PathType Leaf)) {
+            throw "Installer did not place the VST3 binary in the standard system folder"
+          }
+          if (-not (Test-Path -LiteralPath $uninstaller -PathType Leaf)) {
+            throw "Installer did not register its uninstaller"
+          }
+
+          $uninstall = Start-Process -FilePath $uninstaller -ArgumentList "/S" -Wait -PassThru
+          if ($uninstall.ExitCode -ne 0) { throw "Silent uninstaller failed with exit code $($uninstall.ExitCode)" }
+          Start-Sleep -Seconds 2
+          if (Test-Path -LiteralPath (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $installedPlugin)))) {
+            throw "Uninstaller left the BONKO VST3 bundle installed"
+          }
+
       - name: Collect verified release artifacts
         shell: pwsh
         run: |
