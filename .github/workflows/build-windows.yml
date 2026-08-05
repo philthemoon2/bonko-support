@@ -77,7 +77,9 @@ jobs:
           $validator = Get-ChildItem pluginval -Recurse -Filter pluginval.exe | Select-Object -First 1
           if (-not $validator) { throw "pluginval.exe not found" }
           New-Item -ItemType Directory -Force -Path pluginval-results | Out-Null
-          & $validator.FullName --strictness-level 10 --validate-in-process --output-dir pluginval-results $plugin
+          # pluginval's supported CI path validates in its separate child
+          # process so a plug-in failure cannot take down the validator.
+          & $validator.FullName --strictness-level 10 --output-dir pluginval-results $plugin
           if ($LASTEXITCODE -ne 0) { throw "pluginval Windows validation failed" }
 
       - name: Build Windows installer and complete download package
