@@ -54,13 +54,13 @@
 
   <div class="card">
     <h2>What is BONKO Streamer?</h2>
-    <p>BONKO Streamer streams the master bus of your macOS DAW to your iPhone over local WiFi — live, with no cables and no bouncing. Load the free VST3 plugin on your master bus, scan its QR code with the BONKO app, and listen on the speakers people actually use: your phone.</p>
+    <p>BONKO Streamer streams the master bus of your Mac or Windows DAW to your iPhone over local WiFi — live, with no cables and no bouncing. Load the free VST3 plugin on your master bus, scan its QR code with the BONKO app, and listen on the speakers people actually use: your phone.</p>
   </div>
 
   <div class="card">
     <h2>Quick Start</h2>
     <ol>
-      <li>Install the <strong>BONKO Streamer VST3 plugin</strong> on your Mac and load it on the master bus of your DAW.</li>
+      <li>Install the <strong>BONKO Streamer VST3 plugin</strong> on your Mac or Windows PC and load it on the master bus of your DAW.</li>
       <li>Make sure your phone and your computer are on the <strong>same WiFi network</strong>.</li>
       <li>Open the <strong>BONKO app</strong> on your iPhone and scan the QR code shown in the plugin.</li>
       <li>Press play in your DAW — your mix is now live on your phone. The stream keeps playing even when your screen is locked.</li>
@@ -71,15 +71,15 @@
     <h2>FAQ</h2>
     <details>
       <summary>The app can't find my computer / no sound</summary>
-      <p>Check that phone and computer are on the same WiFi network (not guest WiFi or a hotspot). Make sure macOS isn't blocking your DAW in <em>System Settings → Network → Firewall</em>. Then close and reopen the plugin window to restart the stream server.</p>
+      <p>Check that phone and computer are on the same WiFi network (not guest WiFi or a hotspot). Allow your DAW through macOS Firewall or Windows Defender Firewall for private local connections. Then close and reopen the plugin window to restart the stream server.</p>
     </details>
     <details>
       <summary>Which DAWs are supported?</summary>
-      <p>Any macOS DAW that hosts VST3 plugins, including Ableton Live, Cubase, Studio One, FL Studio and REAPER. Logic Pro does not load VST3 plugins and is not supported by the current installer.</p>
+      <p>Compatible 64-bit VST3 hosts on macOS and Windows, including Ableton Live, Cubase, Studio One, FL Studio and REAPER. Logic Pro does not load VST3 plugins and is not supported by the current installer.</p>
     </details>
     <details>
       <summary>Does the audio go through the internet or a cloud?</summary>
-      <p>The normal listening flow runs directly from your Mac to your iPhone inside your own WiFi network. Nothing is uploaded. Only when you explicitly choose <strong>Share Stream</strong> does the desktop plugin create an external listening tunnel so someone outside your network can hear it. See the <a href="privacy.html">Privacy Policy</a> for details.</p>
+      <p>The normal listening flow runs directly from your computer to your iPhone inside your own WiFi network. Nothing is uploaded. Only when you explicitly choose <strong>Share Stream</strong> does the desktop plugin create an external listening tunnel so someone outside your network can hear it. See the <a href="privacy.html">Privacy Policy</a> for details.</p>
     </details>
     <details>
       <summary>The audio drops out or stutters</summary>
@@ -87,7 +87,11 @@
     </details>
     <details>
       <summary>Where do I get the desktop plugin?</summary>
-      <p>Download BONKO Streamer 2.0.1 from the <a href="https://github.com/philthemoon2/bonko-support/releases/download/v2.0.1/BonkoStreamer-v2.0.1-Installer.pkg">official signed and notarized macOS release</a>. The full product page is available at <a href="https://bonko.phil-thebeat.com/">bonko.phil-thebeat.com</a>.</p>
+      <p>Choose the complete BONKO Streamer 2.1.0 package for macOS or Windows on the <a href="https://bonko.phil-thebeat.com/download/">official download page</a>. Each ZIP contains installer, uninstaller, README, license and checksums.</p>
+    </details>
+    <details>
+      <summary>What does MONO ON do?</summary>
+      <p>It creates an equal-gain mono mix from left and right, writes the same signal to both DAW output channels, and sends it to the phone stream. The setting is saved with the DAW project.</p>
     </details>
     <details>
       <summary>Does the app collect any data?</summary>
