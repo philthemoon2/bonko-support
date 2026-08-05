@@ -38,12 +38,17 @@ jobs:
           tar -xzf source.tar.gz -C source
           Remove-Item -Force source.tar.gz.enc, source.tar.gz
 
+      - name: Enable the native MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Configure BONKO for Windows x64
         shell: pwsh
         run: |
           $project = "source/audio-plugin-coder/plugins/BonkerStream"
           $build = "$project/release/build-2.1.0-windows-msvc"
-          cmake -S $project -B $build -G "Visual Studio 17 2022" -A x64 `
+          cmake -S $project -B $build -G Ninja -DCMAKE_BUILD_TYPE=Release `
             -DBONKO_BUILD_TESTS=ON
           if ($LASTEXITCODE -ne 0) { throw "CMake configure failed" }
 
@@ -51,7 +56,7 @@ jobs:
         shell: pwsh
         run: |
           $build = "source/audio-plugin-coder/plugins/BonkerStream/release/build-2.1.0-windows-msvc"
-          cmake --build $build --config Release --target BonkerStreamTests BonkerStream_VST3 --parallel 4
+          cmake --build $build --target BonkerStreamTests BonkerStream_VST3 --parallel 4
           if ($LASTEXITCODE -ne 0) { throw "Windows build failed" }
 
       - name: Run Windows processor and local-server tests
