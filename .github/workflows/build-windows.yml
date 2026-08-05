@@ -82,7 +82,7 @@ jobs:
       - name: Run Windows processor and local-server tests
         shell: pwsh
         run: |
-          $test = "source/audio-plugin-coder/plugins/BonkerStream/release/build-2.1.0-windows-msvc/BonkerStreamTests_artefacts/Release/BonkerStreamTests.exe"
+          $test = "source/audio-plugin-coder/plugins/BonkerStream/release/build-$env:BONKO_VERSION-windows-msvc/BonkerStreamTests_artefacts/Release/BonkerStreamTests.exe"
           & $test
           if ($LASTEXITCODE -ne 0) { throw "BONKO Windows processor tests failed" }
 
