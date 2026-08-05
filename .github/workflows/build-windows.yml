@@ -1,0 +1,105 @@
+name: Build BONKO Windows release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: BONKO semantic version
+        required: true
+        default: 2.1.0
+
+permissions:
+  contents: read
+
+jobs:
+  windows-release:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      BONKO_VERSION: ${{ inputs.version }}
+      BONKO_SOURCE_URL: ${{ secrets.BONKO_WINDOWS_SOURCE_URL }}
+      BONKO_SOURCE_PASSWORD: ${{ secrets.BONKO_WINDOWS_SOURCE_PASSWORD }}
+
+    steps:
+      - name: Checkout release repository
+        uses: actions/checkout@v4
+
+      - name: Download protected desktop source
+        shell: pwsh
+        run: |
+          if (-not $env:BONKO_SOURCE_URL -or -not $env:BONKO_SOURCE_PASSWORD) {
+            throw "Protected source download is not configured"
+          }
+          Invoke-WebRequest -Uri $env:BONKO_SOURCE_URL -OutFile source.tar.gz.enc
+          & openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 `
+            -in source.tar.gz.enc -out source.tar.gz -pass env:BONKO_SOURCE_PASSWORD
+          if ($LASTEXITCODE -ne 0) { throw "Source archive decryption failed" }
+          New-Item -ItemType Directory -Force -Path source | Out-Null
+          tar -xzf source.tar.gz -C source
+          Remove-Item -Force source.tar.gz.enc, source.tar.gz
+
+      - name: Configure BONKO for Windows x64
+        shell: pwsh
+        run: |
+          $project = "source/audio-plugin-coder/plugins/BonkerStream"
+          $build = "$project/release/build-2.1.0-windows-msvc"
+          cmake -S $project -B $build -G "Visual Studio 17 2022" -A x64 `
+            -DBONKO_BUILD_TESTS=ON
+          if ($LASTEXITCODE -ne 0) { throw "CMake configure failed" }
+
+      - name: Build plug-in and processor tests
+        shell: pwsh
+        run: |
+          $build = "source/audio-plugin-coder/plugins/BonkerStream/release/build-2.1.0-windows-msvc"
+          cmake --build $build --config Release --target BonkerStreamTests BonkerStream_VST3 --parallel 4
+          if ($LASTEXITCODE -ne 0) { throw "Windows build failed" }
+
+      - name: Run Windows processor and local-server tests
+        shell: pwsh
+        run: |
+          $test = "source/audio-plugin-coder/plugins/BonkerStream/release/build-2.1.0-windows-msvc/BonkerStreamTests_artefacts/Release/BonkerStreamTests.exe"
+          & $test
+          if ($LASTEXITCODE -ne 0) { throw "BONKO Windows processor tests failed" }
+
+      - name: Validate Windows VST3 with pluginval
+        shell: pwsh
+        run: |
+          $plugin = "source/audio-plugin-coder/plugins/BonkerStream/release/build-2.1.0-windows-msvc/BonkerStream_artefacts/Release/VST3/Bonko Streamer.vst3"
+          Invoke-WebRequest `
+            -Uri "https://github.com/Tracktion/pluginval/releases/download/v1.0.4/pluginval_Windows.zip" `
+            -OutFile pluginval.zip
+          Expand-Archive -LiteralPath pluginval.zip -DestinationPath pluginval
+          $validator = Get-ChildItem pluginval -Recurse -Filter pluginval.exe | Select-Object -First 1
+          if (-not $validator) { throw "pluginval.exe not found" }
+          New-Item -ItemType Directory -Force -Path pluginval-results | Out-Null
+          & $validator.FullName --strictness-level 10 --validate-in-process --output-dir pluginval-results $plugin
+          if ($LASTEXITCODE -ne 0) { throw "pluginval Windows validation failed" }
+
+      - name: Build Windows installer and complete download package
+        shell: pwsh
+        run: |
+          choco install nsis -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw "NSIS installation failed" }
+          $project = "source/audio-plugin-coder/plugins/BonkerStream"
+          & "$project/installer/build_windows_download.ps1" -Version $env:BONKO_VERSION
+          if ($LASTEXITCODE -ne 0) { throw "Windows packaging failed" }
+
+      - name: Collect verified release artifacts
+        shell: pwsh
+        run: |
+          $release = "source/audio-plugin-coder/plugins/BonkerStream/release"
+          New-Item -ItemType Directory -Force -Path verified-windows-release | Out-Null
+          Copy-Item "$release/BonkoStreamer-v$env:BONKO_VERSION-Windows-Setup.exe" verified-windows-release/
+          Copy-Item "$release/BonkoStreamer-v$env:BONKO_VERSION-Windows.zip" verified-windows-release/
+          Copy-Item pluginval-results verified-windows-release/pluginval-results -Recurse
+          Get-FileHash -Algorithm SHA256 verified-windows-release/*.* |
+            ForEach-Object { "$($_.Hash.ToLowerInvariant())  $(Split-Path -Leaf $_.Path)" } |
+            Set-Content verified-windows-release/SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload verified Windows release
+        uses: actions/upload-artifact@v4
+        with:
+          name: BonkoStreamer-v${{ inputs.version }}-Windows-verified
+          path: verified-windows-release
+          if-no-files-found: error
+          retention-days: 7
