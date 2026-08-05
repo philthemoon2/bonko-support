@@ -81,7 +81,37 @@ jobs:
           # The processor test above separately executes 10,000 MONO parameter
           # automation and render cycles before this full VST3/editor pass.
           & $validator.FullName --strictness-level 5 --output-dir pluginval-results $plugin
-          if ($LASTEXITCODE -ne 0) { throw "pluginval Windows validation failed" }
+          $validatorExitCode = $LASTEXITCODE
+
+          # pluginval 1.0.4 on current Windows runners can return process code 1
+          # after its own report has completed with SUCCESS. Gate on the
+          # persisted validator report so a real failed or truncated pass still
+          # fails the release.
+          $resultFiles = @(Get-ChildItem pluginval-results -Recurse -File -Filter *.txt)
+          if ($resultFiles.Count -ne 1) {
+            throw "Expected exactly one pluginval result file, found $($resultFiles.Count)"
+          }
+
+          $resultText = Get-Content -LiteralPath $resultFiles[0].FullName -Raw
+          $requiredEvidence = @(
+            "Completed tests in pluginval / Audio processing",
+            "Completed tests in pluginval / Plugin state",
+            "Completed tests in pluginval / Automation",
+            "Completed tests in pluginval / Editor Automation",
+            "Completed tests in pluginval / Restoring default layout",
+            "SUCCESS"
+          )
+          foreach ($evidence in $requiredEvidence) {
+            if (-not $resultText.Contains($evidence)) {
+              throw "pluginval result is incomplete: missing '$evidence'"
+            }
+          }
+          if ($resultText.Contains("FAILURE")) {
+            throw "pluginval result contains FAILURE"
+          }
+          if ($validatorExitCode -ne 0) {
+            Write-Warning "pluginval returned $validatorExitCode after its persisted report completed with SUCCESS"
+          }
 
       - name: Build Windows installer and complete download package
         shell: pwsh
