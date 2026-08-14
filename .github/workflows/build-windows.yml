@@ -74,15 +74,18 @@ jobs:
         if: ${{ !inputs.allow_unsigned_qa }}
         shell: pwsh
         run: |
-          $msi = Join-Path $env:RUNNER_TEMP "ArtifactSigningClientTools.msi"
+          $ProgressPreference = "SilentlyContinue"
+          Push-Location $env:RUNNER_TEMP
           Invoke-WebRequest `
             -Uri "https://download.microsoft.com/download/70ad2c3b-761f-4aa9-a9de-e7405aa2b4c1/ArtifactSigningClientTools.msi" `
-            -OutFile $msi
+            -OutFile ".\ArtifactSigningClientTools.msi"
           $install = Start-Process msiexec.exe -Wait -PassThru `
-            -ArgumentList @("/i", $msi, "/quiet", "/norestart")
+            -ArgumentList '/I ArtifactSigningClientTools.msi /quiet'
           if ($install.ExitCode -notin @(0, 3010)) {
             throw "Artifact Signing client tools installation failed with exit code $($install.ExitCode)"
           }
+          Remove-Item ".\ArtifactSigningClientTools.msi" -Force
+          Pop-Location
 
       - name: Configure BONKO for Windows x64
         shell: pwsh
