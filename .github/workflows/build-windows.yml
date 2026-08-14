@@ -70,22 +70,14 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Install Azure Artifact Signing client tools
+      - name: Install Azure Artifact Signing module
         if: ${{ !inputs.allow_unsigned_qa }}
         shell: pwsh
         run: |
-          $ProgressPreference = "SilentlyContinue"
-          Push-Location $env:RUNNER_TEMP
-          Invoke-WebRequest `
-            -Uri "https://download.microsoft.com/download/70ad2c3b-761f-4aa9-a9de-e7405aa2b4c1/ArtifactSigningClientTools.msi" `
-            -OutFile ".\ArtifactSigningClientTools.msi"
-          $install = Start-Process msiexec.exe -Wait -PassThru `
-            -ArgumentList '/I ArtifactSigningClientTools.msi /quiet'
-          if ($install.ExitCode -notin @(0, 3010)) {
-            throw "Artifact Signing client tools installation failed with exit code $($install.ExitCode)"
-          }
-          Remove-Item ".\ArtifactSigningClientTools.msi" -Force
-          Pop-Location
+          Install-Module -Name ArtifactSigning -RequiredVersion 0.1.8 `
+            -Force -Repository PSGallery -Scope CurrentUser
+          Import-Module ArtifactSigning -RequiredVersion 0.1.8
+          Get-Command Invoke-ArtifactSigning -ErrorAction Stop | Out-Null
 
       - name: Configure BONKO for Windows x64
         shell: pwsh
